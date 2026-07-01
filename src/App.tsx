@@ -139,11 +139,14 @@ const Modal = ({ item, onClose }: { item: MenuItem; onClose: () => void }) => {
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('Hamburguesas');
-  const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success'>('idle');
+  const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [formError, setFormError] = useState('');
+  const [cookieConsent, setCookieConsent] = useState<'accepted' | 'rejected' | 'pending'>('pending');
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('inicio');
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [formData, setFormData] = useState({ name: '', email: '', details: '' });
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -170,7 +173,7 @@ export default function App() {
       });
     }, { threshold: 0.3 });
 
-    const sections = ['inicio', 'la-carta', 'nosotros', 'contacto', 'localizacion'];
+    const sections = ['inicio', 'la-carta', 'nosotros', 'eventos', 'contacto', 'localizacion'];
     sections.forEach(s => {
       const el = document.getElementById(s);
       if (el) observer.observe(el);
@@ -179,13 +182,72 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const storedConsent = window.localStorage.getItem('lafabrica-cookie-consent');
+    if (storedConsent === 'accepted' || storedConsent === 'rejected') {
+      setCookieConsent(storedConsent as 'accepted' | 'rejected');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (cookieConsent !== 'pending') {
+      window.localStorage.setItem('lafabrica-cookie-consent', cookieConsent);
+    }
+  }, [cookieConsent]);
+
   const categories = Array.from(new Set(MENU_ITEMS.map(item => item.category)));
   const filteredItems = (MENU_ITEMS as MenuItem[]).filter(item => item.category === activeCategory);
+  const upcomingEvents = [
+    {
+      title: 'Festival de la Sidra',
+      date: '12 jul · Gijón',
+      description: 'Tarde de música, sidra y nuestras burgers más demandadas frente al mar.',
+      link: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Festival%20de%20la%20Sidra%20-%20La%20F%C3%A1brica%20de%20Asturias&dates=20260712T180000/20260712T230000&details=Reserva%20tu%20plaza%20en%20el%20festival%20con%20La%20F%C3%A1brica%20de%20Asturias&location=Gij%C3%B3n'
+    },
+    {
+      title: 'Cata de Burgers',
+      date: '20 jul · Móstoles',
+      description: 'Noche de sabor con maridaje de cerveza asturiana y una selección premium.',
+      link: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Cata%20de%20Burgers%20-%20La%20F%C3%A1brica%20de%20Asturias&dates=20260720T200000/20260720T230000&details=Una%20noche%20especial%20para%20probar%20nuestras%20mejores%20burgers&location=M%C3%B3stoles'
+    },
+    {
+      title: 'Fiesta de Empresa',
+      date: '2 ago · Madrid',
+      description: 'Catering para equipos y celebraciones con servicio rápido y menú a medida.',
+      link: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Fiesta%20de%20Empresa%20-%20La%20F%C3%A1brica%20de%20Asturias&dates=20260802T190000/20260802T230000&details=Evento%20para%20empresas%20con%20catering%20de%20La%20F%C3%A1brica%20de%20Asturias&location=Madrid'
+    }
+  ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormStatus('sending');
-    setTimeout(() => setFormStatus('success'), 1500);
+    setFormError('');
+
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/ikergarciaf@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+        },
+        body: new URLSearchParams({
+          name: formData.name,
+          email: formData.email,
+          message: formData.details,
+          _subject: 'Nueva solicitud de evento - La Fábrica de Asturias',
+          _captcha: 'false',
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('No se ha podido enviar el mensaje');
+      }
+
+      setFormData({ name: '', email: '', details: '' });
+      setFormStatus('success');
+    } catch (error) {
+      setFormStatus('error');
+      setFormError('No se ha podido enviar el formulario automáticamente. Escríbenos directamente a sidreriaelembarcadero@hotmail.com.');
+    }
   };
 
   return (
@@ -211,7 +273,7 @@ export default function App() {
         </motion.div>
 
         <div className="hidden md:flex gap-8 items-center text-white">
-          {['Inicio', 'La Carta', 'Nosotros', 'Localización'].map((item) => {
+          {['Inicio', 'La Carta', 'Nosotros', 'Eventos', 'Localización'].map((item) => {
             const sectionId = item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-');
             const isActive = activeSection === sectionId;
             return (
@@ -255,7 +317,7 @@ export default function App() {
               </button>
             </div>
             <div className="flex flex-col gap-8 mt-12">
-              {['Inicio', 'La Carta', 'Nosotros', 'Localización'].map((item) => (
+              {['Inicio', 'La Carta', 'Nosotros', 'Eventos', 'Localización'].map((item) => (
                 <a 
                   key={item} 
                   href={`#${item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')}`}
@@ -594,6 +656,49 @@ export default function App() {
         </div>
       </section>
 
+      {/* Events Section */}
+      <section id="eventos" className="py-32 bg-zinc-950/70 border-t border-zinc-900 scroll-mt-20">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="mb-16"
+          >
+            <span className="font-serif italic text-brand-primary text-xl md:text-2xl mb-4 block">Próximos encuentros</span>
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl uppercase leading-none">EVENTOS QUE<br/><span className="text-stroke tracking-tighter">NO TE PUEDES PERDER</span></h2>
+          </motion.div>
+
+          <div className="grid gap-8 lg:grid-cols-3">
+            {upcomingEvents.map((event) => (
+              <motion.article
+                key={event.title}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                className="glass-card border-white/10 bg-zinc-950 p-8 rounded-[2rem] flex flex-col gap-5"
+              >
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-brand-primary font-bold">{event.date}</p>
+                  <h3 className="font-display text-3xl uppercase mt-3">{event.title}</h3>
+                </div>
+                <p className="text-zinc-400 font-light leading-relaxed">{event.description}</p>
+                <a
+                  href={event.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto inline-flex items-center justify-center gap-2 rounded-full border border-brand-primary/30 px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-brand-primary hover:bg-brand-primary hover:text-brand-dark transition-colors"
+                >
+                  Añadir a mi agenda <ArrowRight size={16} />
+                </a>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Booking / Contact Section */}
       <section id="contacto" className="py-32 bg-brand-dark border-t border-zinc-900 scroll-mt-20">
         <div className="container mx-auto px-6">
@@ -664,7 +769,7 @@ export default function App() {
                        <Send size={40} />
                     </div>
                     <h3 className="font-display text-3xl uppercase mb-2">Mensaje Enviado</h3>
-                    <p className="text-zinc-400 text-sm">Pronto nos pondremos en contacto contigo para forjar tu evento.</p>
+                    <p className="text-zinc-400 text-sm">Gracias por contactar. Nos pondremos en contacto contigo en breve para preparar tu evento.</p>
                     <button 
                       onClick={() => setFormStatus('idle')}
                       className="mt-8 text-xs uppercase font-bold tracking-widest text-brand-primary hover:underline"
@@ -678,7 +783,10 @@ export default function App() {
                        <label className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Nombre Completo</label>
                        <input 
                          required
-                         type="text" 
+                         type="text"
+                         name="name"
+                         value={formData.name}
+                         onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                          className="w-full bg-zinc-900 border border-zinc-800 focus:border-brand-primary outline-none px-6 py-4 rounded-2xl transition-all"
                          placeholder="Ej. Pelayo García"
                        />
@@ -687,7 +795,10 @@ export default function App() {
                        <label className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Email de contacto</label>
                        <input 
                          required
-                         type="email" 
+                         type="email"
+                         name="email"
+                         value={formData.email}
+                         onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                          className="w-full bg-zinc-900 border border-zinc-800 focus:border-brand-primary outline-none px-6 py-4 rounded-2xl transition-all"
                          placeholder="tu@email.com"
                        />
@@ -697,10 +808,16 @@ export default function App() {
                        <textarea 
                          required
                          rows={4}
+                         name="details"
+                         value={formData.details}
+                         onChange={(e) => setFormData(prev => ({ ...prev, details: e.target.value }))}
                          className="w-full bg-zinc-900 border border-zinc-800 focus:border-brand-primary outline-none px-6 py-4 rounded-2xl transition-all resize-none"
                          placeholder="Cuéntanos fecha, lugar y número de personas."
                        />
                     </div>
+                    {formStatus === 'error' && (
+                      <p className="text-sm text-red-400">{formError}</p>
+                    )}
                     <button 
                       disabled={formStatus === 'sending'}
                       className="w-full bg-brand-primary text-brand-dark py-5 rounded-2xl font-display text-2xl uppercase hover:bg-white transition-colors flex items-center justify-center gap-3 disabled:opacity-50"
@@ -750,28 +867,53 @@ export default function App() {
              </div>
 
              <div className="h-[300px] sm:h-[400px] lg:h-[500px] rounded-[2rem] md:rounded-[3rem] overflow-hidden grayscale contrast-125 border border-zinc-800 relative group">
-                {/* Map Integration centered in Móstoles - Zoomed in */}
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12164.53102641025!2d-3.864!3d40.323!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd418e6977712345%3A0x7d656096538c20!2sM%C3%B3stoles%2C%20Madrid!5e0!3m2!1sen!2ses!4v1700000000000!5m2!1sen!2ses" 
-                  width="100%" 
-                  height="100%" 
-                  style={{ border: 0 }} 
-                  allowFullScreen 
-                  loading="lazy" 
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-                <div className="absolute inset-0 bg-brand-dark/20 pointer-events-none group-hover:bg-transparent transition-colors" />
+                {cookieConsent === 'accepted' ? (
+                  <>
+                    <iframe 
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12164.53102641025!2d-3.864!3d40.323!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd418e6977712345%3A0x7d656096538c20!2sM%C3%B3stoles%2C%20Madrid!5e0!3m2!1sen!2ses!4v1700000000000!5m2!1sen!2ses" 
+                      width="100%" 
+                      height="100%" 
+                      style={{ border: 0 }} 
+                      allowFullScreen 
+                      loading="lazy" 
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                    <div className="absolute inset-0 bg-brand-dark/20 pointer-events-none group-hover:bg-transparent transition-colors" />
+                  </>
+                ) : (
+                  <div className="flex h-full flex-col items-center justify-center gap-4 bg-zinc-900/90 p-8 text-center">
+                    <p className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-primary">Mapa con cookies</p>
+                    <h3 className="font-display text-3xl uppercase">Mapa de ubicación</h3>
+                    <p className="max-w-sm text-sm text-zinc-400">Acepta las cookies de terceros para ver el mapa interactivo de Google Maps.</p>
+                    {cookieConsent === 'pending' && (
+                      <div className="flex flex-wrap justify-center gap-3">
+                        <button onClick={() => setCookieConsent('rejected')} className="rounded-full border border-zinc-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-zinc-300">Rechazar</button>
+                        <button onClick={() => setCookieConsent('accepted')} className="rounded-full bg-brand-primary px-4 py-2 text-xs uppercase tracking-[0.2em] text-brand-dark">Aceptar</button>
+                      </div>
+                    )}
+                  </div>
+                )}
              </div>
           </div>
+
+          {cookieConsent === 'pending' && (
+            <div className="mb-8 rounded-[1.5rem] border border-brand-primary/20 bg-zinc-900/80 p-4 sm:p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <p className="text-sm text-zinc-300">Utilizamos cookies para mostrar el mapa y mejorar tu experiencia. Puedes elegir si aceptas o no las cookies de terceros.</p>
+              <div className="flex flex-wrap gap-3">
+                <button onClick={() => setCookieConsent('rejected')} className="rounded-full border border-zinc-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-zinc-300">Rechazar</button>
+                <button onClick={() => setCookieConsent('accepted')} className="rounded-full bg-brand-primary px-4 py-2 text-xs uppercase tracking-[0.2em] text-brand-dark">Aceptar</button>
+              </div>
+            </div>
+          )}
 
           <div className="border-t border-zinc-900 pt-12 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
              <div className="flex flex-col md:flex-row items-center gap-4">
                 <img src={BRAND.logo} alt="Logo" className="w-8 h-8 invert grayscale opacity-50 mb-2 md:mb-0" referrerPolicy="no-referrer" />
-                <p className="text-[10px] uppercase font-bold tracking-[0.2em] sm:tracking-[0.4em] text-zinc-600">© 2024 {BRAND.name}. Fabricado con orgullo en Asturias.</p>
+                <p className="text-[10px] uppercase font-bold tracking-[0.2em] sm:tracking-[0.4em] text-zinc-600">© {new Date().getFullYear()} {BRAND.name}. Fabricado con orgullo en Asturias.</p>
              </div>
              <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
-                {['Términos', 'Privacidad', 'Cookies'].map(i => (
-                  <a key={i} href="#" className="text-[10px] uppercase font-bold tracking-widest text-zinc-600 hover:text-white transition-colors">{i}</a>
+                {[{label:'Términos', href:'/terminos.html'}, {label:'Privacidad', href:'/privacidad.html'}, {label:'Cookies', href:'/cookies.html'}].map(item => (
+                  <a key={item.label} href={item.href} className="text-[10px] uppercase font-bold tracking-widest text-zinc-600 hover:text-white transition-colors">{item.label}</a>
                 ))}
              </div>
           </div>
