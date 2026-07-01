@@ -61,38 +61,6 @@ export const MENU_ITEMS = [
     allergens: ['Gluten', 'Lácteos'],
     longDescription: 'Para los más pequeños o los más puristas: una hamburguesa "Solo carne y queso". Formada por un tierno pan brioche de 100g, 180g de la mejor carne de novillo asturiano y una deliciosa capa de queso ahumado.'
   },
-  {
-    id: 'e1',
-    name: 'Croquetas de la Abuela',
-    description: 'De jamón ibérico o de compango asturiano, cremosas y crujientes.',
-    category: 'Entrantes',
-    image: 'https://picsum.photos/seed/croquetas/800/600',
-    tags: ['Para compartir'],
-    allergens: ['Gluten', 'Lácteos', 'Huevo'],
-    longDescription: 'Croquetas elaboradas diariamente con leche entera de vacas asturianas. Puedes elegir entre el clásico jamón ibérico o nuestro relleno especial de compango (chorizo, morcilla y lacón), capturando toda la esencia de la fabada en un bocado.'
-  },
-  {
-    id: 'e2',
-    name: 'Alitas "Fábrica"',
-    description: 'Adobadas con nuestra mezcla de especias secreta y terminadas en parrilla.',
-    category: 'Entrantes',
-    image: 'https://picsum.photos/seed/wings/800/600',
-    tags: ['Top ventas'],
-    badges: ['Picante'],
-    allergens: ['Gluten', 'Sulfitos'],
-    longDescription: 'Alitas de pollo de corral, marinadas durante 24 horas en un adobo industrial de 12 especias. No las freímos: se terminan lentamente en la parrilla para conseguir una piel crujiente y un interior jugoso con un toque ahumado.'
-  },
-  {
-    id: 'p1',
-    name: 'Tarta de Queso Afuega\'l Pitu',
-    description: 'Tarta de queso horneada con un toque de queso tradicional asturiano.',
-    category: 'Postres',
-    image: 'https://picsum.photos/seed/cheesecake/800/600',
-    tags: ['Casero'],
-    badges: ['Patrimonio'],
-    allergens: ['Gluten', 'Lácteos', 'Huevo'],
-    longDescription: 'Una tarta de queso al estilo de la Viña pero con el carácter de Asturias. Utilizamos queso Afuega\'l Pitu blanco para darle una textura y un sabor únicos, terminada con un punto cremoso que se deshace en la boca.'
-  }
 ];
 
 export const TESTIMONIALS = [

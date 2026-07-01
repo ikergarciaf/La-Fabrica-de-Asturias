@@ -169,7 +169,7 @@ export default function App() {
       });
     }, { threshold: 0.3 });
 
-    const sections = ['inicio', 'la-carta', 'nosotros', 'eventos', 'contacto', 'localizacion'];
+    const sections = ['inicio', 'la-carta', 'nosotros', 'contacto', 'localizacion'];
     sections.forEach(s => {
       const el = document.getElementById(s);
       if (el) observer.observe(el);
@@ -193,26 +193,6 @@ export default function App() {
 
   const categories = Array.from(new Set(MENU_ITEMS.map(item => item.category)));
   const filteredItems = (MENU_ITEMS as MenuItem[]).filter(item => item.category === activeCategory);
-  const upcomingEvents = [
-    {
-      title: 'Festival de la Sidra',
-      date: '12 jul · Gijón',
-      description: 'Tarde de música, sidra y nuestras burgers más demandadas frente al mar.',
-      link: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Festival%20de%20la%20Sidra%20-%20La%20F%C3%A1brica%20de%20Asturias&dates=20260712T180000/20260712T230000&details=Reserva%20tu%20plaza%20en%20el%20festival%20con%20La%20F%C3%A1brica%20de%20Asturias&location=Gij%C3%B3n'
-    },
-    {
-      title: 'Cata de Burgers',
-      date: '20 jul · Móstoles',
-      description: 'Noche de sabor con maridaje de cerveza asturiana y una selección premium.',
-      link: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Cata%20de%20Burgers%20-%20La%20F%C3%A1brica%20de%20Asturias&dates=20260720T200000/20260720T230000&details=Una%20noche%20especial%20para%20probar%20nuestras%20mejores%20burgers&location=M%C3%B3stoles'
-    },
-    {
-      title: 'Fiesta de Empresa',
-      date: '2 ago · Madrid',
-      description: 'Catering para equipos y celebraciones con servicio rápido y menú a medida.',
-      link: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Fiesta%20de%20Empresa%20-%20La%20F%C3%A1brica%20de%20Asturias&dates=20260802T190000/20260802T230000&details=Evento%20para%20empresas%20con%20catering%20de%20La%20F%C3%A1brica%20de%20Asturias&location=Madrid'
-    }
-  ];
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -269,7 +249,7 @@ export default function App() {
         </motion.div>
 
         <div className="hidden md:flex gap-8 items-center text-white">
-          {['Inicio', 'La Carta', 'Nosotros', 'Eventos', 'Localización'].map((item) => {
+          {['Inicio', 'La Carta', 'Nosotros', 'Localización'].map((item) => {
             const sectionId = item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-');
             const isActive = activeSection === sectionId;
             return (
@@ -313,7 +293,7 @@ export default function App() {
               </button>
             </div>
             <div className="flex flex-col gap-8 mt-12">
-              {['Inicio', 'La Carta', 'Nosotros', 'Eventos', 'Localización'].map((item) => (
+              {['Inicio', 'La Carta', 'Nosotros', 'Localización'].map((item) => (
                 <a 
                   key={item} 
                   href={`#${item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')}`}
@@ -652,49 +632,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* Events Section */}
-      <section id="eventos" className="py-32 bg-zinc-950/70 border-t border-zinc-900 scroll-mt-20">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <span className="font-serif italic text-brand-primary text-xl md:text-2xl mb-4 block">Próximos encuentros</span>
-            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl uppercase leading-none">EVENTOS QUE<br/><span className="text-stroke tracking-tighter">NO TE PUEDES PERDER</span></h2>
-          </motion.div>
-
-          <div className="grid gap-8 lg:grid-cols-3">
-            {upcomingEvents.map((event) => (
-              <motion.article
-                key={event.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-                className="glass-card border-white/10 bg-zinc-950 p-8 rounded-[2rem] flex flex-col gap-5"
-              >
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-brand-primary font-bold">{event.date}</p>
-                  <h3 className="font-display text-3xl uppercase mt-3">{event.title}</h3>
-                </div>
-                <p className="text-zinc-400 font-light leading-relaxed">{event.description}</p>
-                <a
-                  href={event.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-auto inline-flex items-center justify-center gap-2 rounded-full border border-brand-primary/30 px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-brand-primary hover:bg-brand-primary hover:text-brand-dark transition-colors"
-                >
-                  Añadir a mi agenda <ArrowRight size={16} />
-                </a>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Booking / Contact Section */}
       <section id="contacto" className="py-32 bg-brand-dark border-t border-zinc-900 scroll-mt-20">
         <div className="container mx-auto px-6">
@@ -840,9 +777,9 @@ export default function App() {
                    <div className="flex gap-6">
                       <div className="text-brand-primary"><MapPin size={32} /></div>
                       <div>
-                         <h4 className="font-display text-2xl uppercase mb-2">Ubicación Actual</h4>
-                         <p className="text-zinc-400 font-light">Estamos rotando por Madrid. Síguenos en Instagram para saber nuestra parada de hoy.</p>
-                         <p className="text-white mt-2">Móstoles, Madrid (Ubicación actual)</p>
+                         <h4 className="font-display text-2xl uppercase mb-2">Ubicación</h4>
+                         <p className="text-zinc-400 font-light">Nos encontramos en Móstoles, Madrid.</p>
+                         <p className="text-white mt-2">Móstoles, Madrid</p>
                       </div>
                    </div>
                    <div className="flex gap-6">
