@@ -615,15 +615,18 @@ export default function App() {
                   ¿Quieres que La Fábrica aparque en tu boda, cumpleaños o evento de empresa? Cuéntanos qué necesitas y nosotros ponemos el sabor.
                 </p>
                 <div className="space-y-6">
-                  <div className="flex items-center gap-4 group">
+                  <a 
+                    href="tel:+34685135192" 
+                    className="flex items-center gap-4 group cursor-pointer"
+                  >
                     <div className="w-12 h-12 shrink-0 rounded-full border border-zinc-800 flex items-center justify-center group-hover:bg-brand-primary group-hover:text-brand-dark transition-colors">
                       <Phone size={20} />
                     </div>
                     <div className="min-w-0">
                       <p className="text-[10px] uppercase font-bold text-zinc-500">Llámanos</p>
-                      <p className="text-xl">+34 685 13 51 92</p>
+                      <p className="text-xl group-hover:text-brand-primary transition-colors">+34 685 13 51 92</p>
                     </div>
-                  </div>
+                  </a>
                   <div className="flex items-center gap-4 group">
                     <div className="w-12 h-12 shrink-0 rounded-full border border-zinc-800 flex items-center justify-center group-hover:bg-brand-primary group-hover:text-brand-dark transition-colors">
                       <Mail size={20} />
@@ -777,7 +780,7 @@ export default function App() {
 
       {/* WhatsApp Floating Button */}
       <a
-        href="https://wa.me/34600000000"
+        href="https://wa.me/34685135192"
         target="_blank"
         rel="noopener noreferrer"
         title="¡Haz tu pedido o consúltanos!"
