@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   Instagram, 
   MapPin, 
@@ -18,10 +18,7 @@ import {
   Utensils,
   Truck,
   Send,
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  Info
+  Star
 } from 'lucide-react';
 import { MENU_ITEMS, BRAND, TESTIMONIALS } from './constants';
 
@@ -147,7 +144,6 @@ export default function App() {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [formData, setFormData] = useState({ name: '', email: '', details: '' });
-  const scrollRef = useRef(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
