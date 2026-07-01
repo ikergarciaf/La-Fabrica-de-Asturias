@@ -1,7 +1,7 @@
 export const MENU_ITEMS = [
   {
     id: 'c1',
-    name: 'Hamburguesa Asturiana',
+    name: 'La Bestia Asturiana',
     description: 'Jugosa hamburguesa de 180g de novillo asturiano en pan brioche, con cebolla caramelizada, tomate deshidratado, pepinillo, queso ahumado, papada ibérica y salsa cabrales.',
     category: 'Hamburguesas',
     image: '/img/asturiana.jpeg',
@@ -39,7 +39,7 @@ export const MENU_ITEMS = [
   },
   {
     id: 'c4',
-    name: 'Hamburguesa Premium',
+    name: 'La Rompedietas',
     description: '180g de novillo asturiano, queso ahumado, cebolla caramelizada, patatas onduladas, huevo frito e inyección de salsa de huevos rotos.',
     category: 'Hamburguesas',
     image: '/img/premium.jpeg',
