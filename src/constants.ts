@@ -66,7 +66,7 @@ export const MENU_ITEMS = [
     name: 'Bocadillo de cachopo',
     description: 'Solomillo ibérico, relleno de jamón ibérico y queso gamoneo.',
     category: 'Bocadillos',
-    image: '/img/bocadillo_cachopo.jpg',
+    image: '/img/bocadillo_cachopo.jpeg',
     imagePosition: 'center',
     price: '12.50€',
     tags: ['Especial', 'Ibérico'],
