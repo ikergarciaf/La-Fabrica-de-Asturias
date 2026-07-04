@@ -61,6 +61,45 @@ export const MENU_ITEMS = [
     allergens: ['Gluten', 'Lácteos'],
     longDescription: 'Para los más pequeños o los más puristas: una hamburguesa "Solo carne y queso". Formada por un tierno pan brioche de 100g, 180g de la mejor carne de novillo asturiano y una deliciosa capa de queso ahumado.'
   },
+  {
+    id: 'c6',
+    name: 'Bocadillo de cachopo',
+    description: 'Solomillo ibérico, relleno de jamón ibérico y queso gamoneo.',
+    category: 'Bocadillos',
+    image: '/img/bocadillo_cachopo.jpg',
+    imagePosition: 'center',
+    price: '12.50€',
+    tags: ['Especial', 'Ibérico'],
+    badges: [],
+    allergens: ['Gluten', 'Lácteos'],
+    longDescription: 'Solomillo ibérico empanado estilo cachopo, relleno de jamón ibérico y queso gamoneo. Contiene gluten y lactosa.'
+  },
+  {
+    id: 'c7',
+    name: 'Bocadillo de chorizo a la sidra',
+    description: 'Chorizo asturiano cocido con sidra asturiana.',
+    category: 'Bocadillos',
+    image: '/img/bocadillo_chorizo_sidra.jpg',
+    imagePosition: 'center',
+    price: '6.50€',
+    tags: ['Clásico'],
+    badges: [],
+    allergens: ['Gluten'],
+    longDescription: 'Chorizo asturiano cocido con sidra de la tierra, servido en pan artesanal. Contiene gluten.'
+  },
+  {
+    id: 'c8',
+    name: 'Patatas al cabrales',
+    description: 'Patatas fritas con salsa de cabrales.',
+    category: 'Acompañamientos',
+    image: '/img/patatas_cabrales.jpg',
+    imagePosition: 'center',
+    price: '4.00€',
+    tags: ['Salsa'],
+    badges: [],
+    allergens: ['Lácteos'],
+    longDescription: 'Patatas fritas crujientes bañadas en una cremosa salsa de queso cabrales. Contiene lactosa.'
+  },
 ];
 
 export const TESTIMONIALS = [
